@@ -7,6 +7,7 @@ using TMPro;
 public class ClientCard : MonoBehaviour
 {
     private Client client;
+    private Transform clientListTransform;
 
     public TMP_Text clientNameText;
     public TMP_Text clientTimerText;
@@ -14,7 +15,8 @@ public class ClientCard : MonoBehaviour
 
     private void Start()
     {
-        if (client == null) client = Client.GenerateRandomClient(transform);
+        clientListTransform = GameObject.Find("ClientList").transform;
+        if (client == null) client = Client.GenerateRandomClient(clientListTransform);
 
         clientNameText.text = client.name;
         clientImage.sprite = client.photo;
@@ -26,6 +28,7 @@ public class ClientCard : MonoBehaviour
 
         if (client.currentTime < 0)
         {
+            Destroy(client.gameObject);
             Destroy(gameObject);
         }
     }

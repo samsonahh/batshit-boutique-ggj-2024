@@ -16,18 +16,21 @@ public class Client: MonoBehaviour
         currentTime -= Time.deltaTime;
     }
 
-    public static Client GenerateRandomClient(Transform cardTransform)
+    public static Client GenerateRandomClient(Transform clientListParent)
     {
         GameObject tempObj = new GameObject("Client Object");
         tempObj.AddComponent<Client>();
 
-        GameObject clientObject = Instantiate(tempObj, cardTransform);
+        GameObject clientObject = Instantiate(tempObj, clientListParent);
+        Destroy(tempObj);
 
         Client randomClient = clientObject.GetComponent<Client>();
 
         randomClient.name = GameManager.Instance.possibleNames[UnityEngine.Random.Range(0, GameManager.Instance.possibleNames.Length)];
-        randomClient.timeLimit = UnityEngine.Random.Range(15, 300);
+        randomClient.timeLimit = UnityEngine.Random.Range(15, 60);
         randomClient.currentTime = randomClient.timeLimit;
+
+        clientObject.name = randomClient.name;
 
         return randomClient;
     }
