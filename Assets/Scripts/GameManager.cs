@@ -18,8 +18,8 @@ public class GameManager : MonoBehaviour
     [Header("Salon Settings")]
     public string salonName;
     public bool b_gameStarted;
-
-
+    public string[] possibleNames;
+    public bool b_isWorkingOnClient;
 
     private void Awake()
     {
@@ -35,6 +35,7 @@ public class GameManager : MonoBehaviour
 
         // Makes sure the game isnt started yet until the player names the salon
         b_gameStarted = false;
+        b_isWorkingOnClient = false;
     }
 
     private void Update()
@@ -62,8 +63,18 @@ public class GameManager : MonoBehaviour
     {
         if (name.Length < 1) return false;
 
-        if (name.Length > 15) return false;
+        if (name.Length > 30) return false;
 
         return true;
+    }
+
+    public void StartClientMakeover(Client client)
+    {
+        b_isWorkingOnClient = true;
+
+        clientSelectCanvas.SetActive(false);
+        gameplayCanvas.SetActive(true);
+
+        Debug.Log("Name: " + client.name + ", Timer: " + client.currentTime.ToString());
     }
 }
