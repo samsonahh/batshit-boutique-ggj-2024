@@ -14,12 +14,15 @@ public class GameManager : MonoBehaviour
     public GameObject clientSelectCanvas;
     public TMP_Text clientSelectSalonName;
     public GameObject gameplayCanvas;
+    public TMP_Text clientGameplayNameText;
+    public TMP_Text clientGameplayTimerText;
 
     [Header("Salon Settings")]
     public string salonName;
     public bool b_gameStarted;
     public string[] possibleNames;
     public bool b_isWorkingOnClient;
+    public Client currentClient;
 
     private void Awake()
     {
@@ -41,6 +44,10 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         if (!b_gameStarted) return;
+
+        if (!b_isWorkingOnClient) return;
+
+        HandleClientMakeOverGameplay();
     }
 
     public void StartGame()
@@ -70,11 +77,20 @@ public class GameManager : MonoBehaviour
 
     public void StartClientMakeover(Client client)
     {
-        b_isWorkingOnClient = true;
+        currentClient = client;
+        Debug.Log("Name: " + currentClient.name + ", Timer: " + Client.StringifyTime(client.currentTime));
 
         clientSelectCanvas.SetActive(false);
         gameplayCanvas.SetActive(true);
 
-        Debug.Log("Name: " + client.name + ", Timer: " + client.currentTime.ToString());
+        b_isWorkingOnClient = true;
+    }
+
+    void HandleClientMakeOverGameplay()
+    {
+        if (!b_isWorkingOnClient) return;
+
+        clientGameplayNameText.text = currentClient.name;
+        clientGameplayTimerText.text = Client.StringifyTime(currentClient.currentTime);
     }
 }

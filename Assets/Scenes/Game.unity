@@ -1361,6 +1361,8 @@ MonoBehaviour:
   clientSelectCanvas: {fileID: 134123865}
   clientSelectSalonName: {fileID: 739697474}
   gameplayCanvas: {fileID: 2079521444}
+  clientGameplayNameText: {fileID: 1961319680}
+  clientGameplayTimerText: {fileID: 1203733364}
   salonName: 
   b_gameStarted: 0
   possibleNames:
@@ -1375,6 +1377,7 @@ MonoBehaviour:
   - i
   - j
   b_isWorkingOnClient: 0
+  currentClient: {fileID: 0}
 --- !u!4 &1048170296
 Transform:
   m_ObjectHideFlags: 0

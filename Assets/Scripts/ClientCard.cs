@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System;
 
 public class ClientCard : MonoBehaviour
 {
@@ -15,7 +14,7 @@ public class ClientCard : MonoBehaviour
 
     private void Start()
     {
-        if (client == null) client = Client.GenerateRandomClient();
+        if (client == null) client = Client.GenerateRandomClient(transform);
 
         clientNameText.text = client.name;
         clientImage.sprite = client.photo;
@@ -23,7 +22,7 @@ public class ClientCard : MonoBehaviour
 
     private void Update()
     {
-        clientTimerText.text = string.Format("{0:00}:{1:00}", TimeSpan.FromSeconds(client.currentTime).Minutes, TimeSpan.FromSeconds(client.currentTime).Seconds);
+        clientTimerText.text = Client.StringifyTime(client.currentTime);
 
         if (client.currentTime < 0)
         {
@@ -33,8 +32,6 @@ public class ClientCard : MonoBehaviour
 
     public void AcceptClient()
     {
-        Debug.Log(clientNameText.text + " CLICKED");
-
         if (GameManager.Instance.b_isWorkingOnClient) return;
 
         GameManager.Instance.StartClientMakeover(client);
