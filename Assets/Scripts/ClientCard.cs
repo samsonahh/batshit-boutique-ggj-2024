@@ -17,6 +17,7 @@ public class ClientCard : MonoBehaviour
     {
         clientListTransform = GameObject.Find("ClientList").transform;
         if (client == null) client = Client.GenerateRandomClient(clientListTransform);
+        client.card = this;
 
         clientNameText.text = client.name;
         clientImage.sprite = client.photo;
@@ -28,6 +29,10 @@ public class ClientCard : MonoBehaviour
 
         if (client.currentTime < 0)
         {
+            GameManager.Instance.clientRatings.Add(0);
+            GameManager.Instance.alertText.text = client.name + " left your salon and gave you a rating of 0";
+            GameManager.Instance.alertText.color = Color.red;
+
             Destroy(client.gameObject);
             Destroy(gameObject);
         }

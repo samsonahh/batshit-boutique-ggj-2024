@@ -5,11 +5,22 @@ using System;
 
 public class Client: MonoBehaviour
 {
+    public ClientCard card;
+
     public new string name;
     public float timeLimit; // in seconds
     public float currentTime; // in seconds
+    public List<string> toolRequestOrder;
 
     public Sprite photo;
+    public Sprite face;
+    public Sprite ear;
+    public Sprite mouth;
+    public Sprite chin;
+    public Sprite hair;
+    public Sprite nose;
+    public Sprite eye;
+    public Sprite eyebrows;
 
     private void Update()
     {
@@ -29,6 +40,8 @@ public class Client: MonoBehaviour
         randomClient.name = GameManager.Instance.possibleNames[UnityEngine.Random.Range(0, GameManager.Instance.possibleNames.Length)];
         randomClient.timeLimit = UnityEngine.Random.Range(15, 60);
         randomClient.currentTime = randomClient.timeLimit;
+        
+        
 
         clientObject.name = randomClient.name;
 
