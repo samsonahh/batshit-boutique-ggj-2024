@@ -14,11 +14,13 @@ public class DragAndDrop : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginD
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (!GameManager.Instance.b_canDragTool) return;
         b_isDraggingTool = true;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (!GameManager.Instance.b_canDragTool) return;
         GameManager.Instance.b_isDraggingTool = true;
     }
 
@@ -26,6 +28,8 @@ public class DragAndDrop : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginD
     {
         GameManager.Instance.b_isDraggingTool = false;
         b_isDraggingTool = false;
+        if (!GameManager.Instance.b_canDragTool) return;
+        if (!GameManager.Instance.b_isOverFace) return;
         GameManager.Instance.ApplyMakeup(gameObject.name);
         transform.position = originalPosition;
     }
@@ -42,8 +46,14 @@ public class DragAndDrop : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginD
         if (!GameManager.Instance.b_canDragTool) return;
 
         if (b_isDraggingTool && GameManager.Instance.b_isDraggingTool)
+        {
+            Cursor.visible = false;
             transform.position = Vector2.Lerp(transform.position, Input.mousePosition, 50 * Time.deltaTime);
+        }
         else
+        {
+            Cursor.visible = true;
             transform.position = originalPosition;
+        }
     }
 }

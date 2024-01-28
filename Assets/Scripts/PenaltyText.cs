@@ -16,8 +16,10 @@ public class PenaltyText : MonoBehaviour
 
     private void Update()
     {
+        if (!GameManager.Instance.b_isWorkingOnClient) Destroy(gameObject);
         timer += Time.deltaTime;
 
         if (timer > 1f) Destroy(gameObject);
+
     }
 }

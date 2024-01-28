@@ -11,8 +11,10 @@ public class Client: MonoBehaviour
     public float timeLimit; // in seconds
     public float currentTime; // in seconds
     public List<string> requiredTools;
+    public int faceIndex;
 
     public Sprite photo;
+    public Sprite face;
     public Sprite ear;
     public Sprite mouth;
     public Sprite chin;
@@ -43,6 +45,9 @@ public class Client: MonoBehaviour
         randomClient.timeLimit = UnityEngine.Random.Range(30, 60);
         randomClient.currentTime = randomClient.timeLimit;
         randomClient.requiredTools = new List<string>();
+
+        randomClient.faceIndex = UnityEngine.Random.Range(0, GameManager.Instance.faceSprites.Length);
+        randomClient.face = GameManager.Instance.faceSprites[randomClient.faceIndex];
 
         int randomIndex = UnityEngine.Random.Range(0, GameManager.Instance.eyeSprites.Length);
         randomClient.eye = GameManager.Instance.eyeSprites[randomIndex];

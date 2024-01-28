@@ -11,7 +11,14 @@ public class ClientCard : MonoBehaviour
 
     public TMP_Text clientNameText;
     public TMP_Text clientTimerText;
-    public Image clientImage;
+
+    public Image face;
+    public Image ear;
+    public Image mouth;
+    public Image chin;
+    public Image eye;
+    public Image nose;
+    public Image eyebrow;
 
     private void Start()
     {
@@ -20,7 +27,13 @@ public class ClientCard : MonoBehaviour
         client.card = this;
 
         clientNameText.text = client.name;
-        clientImage.sprite = client.photo;
+
+        face.sprite = client.face;
+        ear.sprite = client.ear;
+        nose.sprite = client.nose;
+        mouth.sprite = client.mouth;
+        eyebrow.sprite = client.eyebrows;
+        chin.sprite = client.chin;
     }
 
     private void Update()
@@ -31,7 +44,6 @@ public class ClientCard : MonoBehaviour
         {
             AudioSource.PlayClipAtPoint(GameManager.Instance.vineBoom, Vector3.zero);
             GameManager.Instance.clientRatings.Add(0);
-            GameManager.Instance.alertText.color = Color.red;
             GameManager.Instance.alertText.text = client.name + " left your salon and gave you a rating of 0";
 
             Destroy(client.gameObject);
