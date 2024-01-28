@@ -29,9 +29,10 @@ public class ClientCard : MonoBehaviour
 
         if (client.currentTime < 0)
         {
+            AudioSource.PlayClipAtPoint(GameManager.Instance.vineBoom, Vector3.zero);
             GameManager.Instance.clientRatings.Add(0);
-            GameManager.Instance.alertText.text = client.name + " left your salon and gave you a rating of 0";
             GameManager.Instance.alertText.color = Color.red;
+            GameManager.Instance.alertText.text = client.name + " left your salon and gave you a rating of 0";
 
             Destroy(client.gameObject);
             Destroy(gameObject);

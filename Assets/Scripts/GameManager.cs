@@ -29,10 +29,7 @@ public class GameManager : MonoBehaviour
     public string[] possibleNames;
     public bool b_isWorkingOnClient;
     public Client currentClient;
-    public string currentClientRequest;
 
-    List<string> clientParts;
-    public Dictionary<string, string[]> possiblePrompts;
     public string[] toolNames;
 
     public Sprite floorBufferSprite;
@@ -42,12 +39,32 @@ public class GameManager : MonoBehaviour
     public Sprite magicWandSprite;
     public Sprite icePackSprite;
 
+    public Sprite[] eyeSprites;
+    public Sprite[] eyebrowSprites;
+    public Sprite[] mouthSprites;
+    public Sprite[] earSprites;
+    public Sprite[] noseSprites;
+    public Sprite[] chinSprites;
+
+    public Image clientEye;
+    public Image clientEyebrow;
+    public Image clientMouth;
+    public Image clientEar;
+    public Image clientNose;
+    public Image clientChin;
+
+    public GameObject penaltyTextPrefab;
+
     public bool b_isDraggingTool;
-    public string selectedTool;
+    public bool b_canDragTool;
 
     public float rating;
     public List<float> clientRatings;
     public int satisfiedClients;
+
+    [Header("Audio")]
+    public AudioClip vineBoom;
+    public AudioClip correctSound;
 
 
     private void Awake()
@@ -66,21 +83,9 @@ public class GameManager : MonoBehaviour
         b_gameStarted = false;
         b_isWorkingOnClient = false;
 
-        possibleNames = new string[] { "Deez N.", "Hughe G. Rection", "Steve Diamondpick", "Steve Steve", "Charlie Cheese", "Ieluv Ore", "Kranken Nein Dees", "Bertha Khunt", "Terry Tootits", "Pablo Poopenfarten", "Stinky McBinkleskin", "The Less Than Long Johnson", "Baskin The Bob Robin", "Tomasz", "Schmorgasboard Henry", "Stanley Peenspleen", "Vicky Yaborger", "Krangis Mcbasketball", "Jack Bubigbottomhank", "Michael Hamsandwich", "Al Beback", "Anita Bath", "Bea O'Problem", "Ben Dover", "Bill Board", "Brock Lee", "Ben Dover", "Chris P. Bacon", "Crystal Clear", "Dee Zyner", "Drew Peacock", "Ella Vator", "Frank N. Stein", "Gail Forcewind", "Hugh Jass", "Ima Pigg", "Ivana Tinkle", "Justin Time", "Ken Tucky", "Les Ismore", "Lou Natic", "Luke Warm", "Moe Lester", "Neil Down", "Paige Turner", "Pat Myback", "Ray N. Carnation", "Rob Banks", "Rusty Nail", "Seymour Butz", "Stan Still", "Tess Tickle", "Upton O'Good", "Wayne Dwops", "Will Power", "Yul B. Next", "Al O'Moaney", "Al Bequerque", "Barb Dwyer", "Beau Vine", "Brock O'Bama", "Cam O'Flage", "Candi Barr", "Dee Sember", "Don Keigh", "Ella Vator", "Fran Tick", "Gene Poole", "Gail Forcewind" };
-
-        possiblePrompts = new Dictionary<string, string[]>()
-        {
-            { "FloorBuffer", new string[] { "My poor face is too bumpy. Smooth it out!" } },
-            { "Chisel", new string[] { "I’m looking for a more defined look. Make me as chiseled as a Greek god!" } },
-            { "Handsaw", new string[] { "I’ve got a hot date at 5. I wanna look sharp." } },
-            { "Needle", new string[] { "EMERGENCY QUICK FIX NOW!" } },
-            { "MagicWand", new string[] { "I’m feeling spontaneous. Surprise me." } },
-            { "IcePack", new string[] { "OW MY FACE! HELP ME!" } },
-        };
+        possibleNames = new string[] { "Deez N.", "Hugh G. Rection", "Steve Diamondpick", "Steve Steve", "Charlie Cheese", "Ieluv Ore", "Kranken Nein Dees", "Bertha Khunt", "Terry Tootits", "Pablo Poopenfarten", "Stinky McBinkleskin", "The Less Than Long Johnson", "Baskin The Bob Robin", "Tomasz", "Schmorgasboard Henry", "Stanley Peenspleen", "Vicky Yaborger", "Krangis Mcbasketball", "Jack Bubigbottomhank", "Michael Hamsandwich", "Al Beback", "Anita Bath", "Bea O'Problem", "Ben Dover", "Bill Board", "Brock Lee", "Ben Dover", "Chris P. Bacon", "Crystal Clear", "Dee Zyner", "Drew Peacock", "Ella Vator", "Frank N. Stein", "Gail Forcewind", "Hugh Jass", "Ima Pigg", "Ivana Tinkle", "Justin Time", "Ken Tucky", "Les Ismore", "Lou Natic", "Luke Warm", "Moe Lester", "Neil Down", "Paige Turner", "Pat Myback", "Ray N. Carnation", "Rob Banks", "Rusty Nail", "Seymour Butz", "Stan Still", "Tess Tickle", "Upton O'Good", "Wayne Dwops", "Will Power", "Yul B. Next", "Al O'Moaney", "Al Bequerque", "Barb Dwyer", "Beau Vine", "Brock O'Bama", "Cam O'Flage", "Candi Barr", "Dee Sember", "Don Keigh", "Ella Vator", "Fran Tick", "Gene Poole", "Gail Forcewind" };
 
         toolNames = new string[] { "FloorBuffer", "Chisel", "Handsaw", "Needle", "MagicWand", "IcePack" };
-
-        ResetClientParts();
     }
 
     private void Update()
@@ -141,6 +146,7 @@ public class GameManager : MonoBehaviour
         gameplayCanvas.SetActive(true);
 
         b_isWorkingOnClient = true;
+        b_canDragTool = true;
     }
 
     void HandleClientMakeOverGameplay()
@@ -149,6 +155,13 @@ public class GameManager : MonoBehaviour
 
         clientGameplayNameText.text = currentClient.name;
         clientGameplayTimerText.text = Client.StringifyTime(currentClient.currentTime);
+        
+        clientEye.sprite = currentClient.eye;
+        clientEyebrow.sprite = currentClient.eyebrows;
+        clientMouth.sprite = currentClient.mouth;
+        clientNose.sprite = currentClient.nose;
+        clientEar.sprite = currentClient.ear;
+        clientChin.sprite = currentClient.chin;
 
         // when you run out of time
         if(currentClient.currentTime < 0)
@@ -156,40 +169,32 @@ public class GameManager : MonoBehaviour
             clientSelectCanvas.SetActive(true);
             gameplayCanvas.SetActive(false);
 
-            ResetClientParts();
             b_isDraggingTool = false;
             b_isWorkingOnClient = false;
         }
     }
 
-    public void ApplyRandomMakeup(string toolName)
+    public void ApplyMakeup(string toolName)
     {
-        int randomIndex = Random.Range(0, clientParts.Count);
-
-        GameObject randomPart = GameObject.Find(clientParts[randomIndex]);
-
-        clientParts.RemoveAt(randomIndex);
-
-        if(clientParts.Count == 1)
+        if (!currentClient.requiredTools.Contains(toolName))
         {
-            clientSelectCanvas.SetActive(true);
-            gameplayCanvas.SetActive(false);
-
-            float rating = CalculateRating();
-            clientRatings.Add(rating);
-            alertText.text = currentClient.name + " left your salon and gave you a rating of " + (rating).ToString();
-            alertText.color = Color.green;
-
-            ResetClientParts();
-            b_isDraggingTool = false;
-            b_isWorkingOnClient = false;
-
-            Destroy(currentClient.card.gameObject);
-            Destroy(currentClient.gameObject);
-            currentClient = null;
-
-            satisfiedClients++;
+            AudioSource.PlayClipAtPoint(vineBoom, Vector3.zero);
+            Instantiate(penaltyTextPrefab, gameplayCanvas.transform);
+            currentClient.currentTime -= 2f;
+            return;
         }
+
+        if(currentClient.requiredTools.Count != 1)
+        {
+            currentClient.requiredTools.Remove(toolName);
+            ReplaceFacePart(toolName);
+            return;
+        }
+
+        currentClient.requiredTools.Remove(toolName);
+        ReplaceFacePart(toolName);
+
+        StartCoroutine(FinishClient());
     }
 
     public float CalculateFinalRating()
@@ -212,8 +217,56 @@ public class GameManager : MonoBehaviour
         return Mathf.Round((currentClient.currentTime / currentClient.timeLimit) * 5f * 10f)/10f;
     }
 
-    public void ResetClientParts()
+    public void ReplaceFacePart(string toolName)
     {
-        clientParts = new List<string> { "ClientFace", "ClientEar", "ClientMouth", "ClientChin", "ClientHair", "ClientNose", "ClientEye", "ClientEyebrows" };
+        switch (toolName)
+        {
+            case "FloorBuffer":
+                currentClient.eye = eyeSprites[0];
+                break;
+            case "Chisel":
+                currentClient.eyebrows = eyebrowSprites[0];
+                break;
+            case "Handsaw":
+                currentClient.chin = chinSprites[0];
+                break;
+            case "Needle":
+                currentClient.mouth = mouthSprites[0];
+                break;
+            case "MagicWand":
+                currentClient.nose = noseSprites[0];
+                break;
+            case "IcePack":
+                currentClient.ear = earSprites[0];
+                break;
+            case null:
+                break;
+        }
+    }
+
+    IEnumerator FinishClient()
+    {
+        b_canDragTool = false;
+        
+        float rating = CalculateRating();
+        clientRatings.Add(rating);
+        alertText.color = Color.green;
+        alertText.text = currentClient.name + " left your salon and gave you a rating of " + (rating).ToString();
+        
+        AudioSource.PlayClipAtPoint(correctSound, Vector3.zero);
+
+        yield return new WaitForSeconds(2);
+
+        clientSelectCanvas.SetActive(true);
+        gameplayCanvas.SetActive(false);
+
+        b_isDraggingTool = false;
+        b_isWorkingOnClient = false;
+
+        Destroy(currentClient.card.gameObject);
+        Destroy(currentClient.gameObject);
+        currentClient = null;
+
+        satisfiedClients++;
     }
 }

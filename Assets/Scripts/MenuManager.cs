@@ -10,6 +10,6 @@ public class MenuManager : MonoBehaviour
     public void StartGame()
     {
         //Starts the cutscene
-        SceneManager.LoadScene("MenuToGame");
+        SceneManager.LoadScene("Game");
     }
 }
