@@ -55,6 +55,7 @@ public class GameManager : MonoBehaviour
     public bool b_isDraggingTool;
     public bool b_canDragTool;
     public bool b_isOverFace;
+    public bool b_isFinishingClient;
 
     public float rating;
     public List<float> clientRatings;
@@ -149,7 +150,7 @@ public class GameManager : MonoBehaviour
             Instantiate(clientCardPrefab, clientSelectContentTransform);
             AudioSource.PlayClipAtPoint(bellSound, Vector3.zero);
 
-            float randomWaitTime = Random.Range(1, 15);
+            float randomWaitTime = Random.Range(3, 15);
             yield return new WaitForSeconds(randomWaitTime);
         }
     }
@@ -173,7 +174,10 @@ public class GameManager : MonoBehaviour
         if (!b_isWorkingOnClient) return;
 
         clientGameplayNameText.text = currentClient.name;
-        clientGameplayTimerText.text = Client.StringifyTime(currentClient.currentTime);
+        if (!b_isFinishingClient)
+        {
+            clientGameplayTimerText.text = Client.StringifyTime(currentClient.currentTime);
+        }
 
         clientFace.sprite = currentClient.face;
         clientEye.sprite = currentClient.eye;
@@ -243,7 +247,12 @@ public class GameManager : MonoBehaviour
 
     public float CalculateRating()
     {
-        return Mathf.Round((currentClient.currentTime / currentClient.timeLimit) * 4f * 10f)/10f + 1f;
+        float riggedTimeLimit = currentClient.timeLimit * 0.85f;
+
+        float riggedCurrentTime = Mathf.Clamp(currentClient.currentTime, 0, riggedTimeLimit);
+        float fractionalRating = riggedCurrentTime / riggedTimeLimit;
+
+        return Mathf.Round(fractionalRating * 4f * 10f)/10f + 1f;
     }
 
     public void ReplaceFacePart(string toolName)
@@ -276,6 +285,7 @@ public class GameManager : MonoBehaviour
     IEnumerator FinishClient()
     {
         b_canDragTool = false;
+        b_isFinishingClient = true;
         
         yield return new WaitForSeconds(0.25f);
 
@@ -299,6 +309,7 @@ public class GameManager : MonoBehaviour
 
         b_isDraggingTool = false;
         b_isWorkingOnClient = false;
+        b_isFinishingClient = false;
 
         Destroy(currentClient.card.gameObject);
         Destroy(currentClient.gameObject);
